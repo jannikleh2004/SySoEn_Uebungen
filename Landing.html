@@ -326,16 +326,15 @@
         <div>
           <h1>Lerne unsere <span style="background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent;">Lieblingsorte</span> kennen.</h1>
           <p class="lead">
-            Eine schöne One-Page-Landing-Page, die später auf GitHub Pages gehostet werden kann.
-            Unten findest du Orte als Karten. Mit einem Klick auf „Mehr erfahren“ öffnet sich ein Pop-up (Modal)
-            mit Details. Inhalte können später leicht erweitert werden.
+            Unten findest du Länder als Karten. Mit einem Klick auf „Mehr erfahren“ öffnet sich ein Pop-up (Modal)
+            und lädt den Inhalt aus einer eigenen HTML-Datei (Japan/USA/Australien).
           </p>
 
           <div class="badges" aria-label="Badges">
             <span class="badge"><span class="dot" aria-hidden="true"></span> One Pager</span>
-            <span class="badge"><span class="dot" aria-hidden="true"></span> GitHub Pages-ready</span>
-            <span class="badge"><span class="dot" aria-hidden="true"></span> Modals per Button</span>
-            <span class="badge"><span class="dot" aria-hidden="true"></span> Leicht erweiterbar</span>
+            <span class="badge"><span class="dot" aria-hidden="true"></span> Subpages als Dateien</span>
+            <span class="badge"><span class="dot" aria-hidden="true"></span> Pop-up lädt Inhalt</span>
+            <span class="badge"><span class="dot" aria-hidden="true"></span> Look bleibt gleich</span>
           </div>
 
           <div class="cta">
@@ -347,8 +346,8 @@
         <div class="card">
           <b style="font-size:14px;">Quickstart</b>
           <p style="margin-top:8px;">
-            1) Datei als <code>index.html</code> speichern<br/>
-            2) In GitHub Repo hochladen<br/>
+            1) <code>index.html</code> + <code>japan.html</code> + <code>usa.html</code> + <code>australia.html</code><br/>
+            2) In GitHub Repo pushen<br/>
             3) GitHub Pages aktivieren<br/>
             4) Buttons öffnen Modals ✅
           </p>
@@ -360,7 +359,7 @@
     <section id="orte" class="section" aria-label="Orte">
       <div class="card">
         <h2 style="margin:0 0 10px; font-size:18px;">Unsere Orte</h2>
-        <p>Beispielkarten. Die Inhalte kommen aus einer <b>einfachen JS-Datenliste</b> (unten im Script) und können später erweitert werden.</p>
+        <p>Die Karten laden Inhalte aus <b>eigenen HTML-Dateien</b> und zeigen sie als Pop-up an.</p>
       </div>
 
       <div style="height:14px"></div>
@@ -376,17 +375,17 @@
     <!-- HOWTO -->
     <section id="howto" class="section" aria-label="Wie es funktioniert">
       <div class="card">
-        <h2 style="margin:0 0 10px; font-size:18px;">Wie es funktioniert (für späteres Reinprogrammieren)</h2>
+        <h2 style="margin:0 0 10px; font-size:18px;">Wie es funktioniert</h2>
         <p>
-          Alle Orte stehen in einer Liste namens <code>PLACES</code>. Um einen neuen Ort hinzuzufügen, kopiert ihr einfach ein Objekt,
-          ändert Titel, Standort, Tags und Text — fertig. Die Buttons öffnen automatisch das Pop-up.
+          Jeder Eintrag in <code>PLACES</code> hat ein Feld <code>page</code> (z. B. <code>japan.html</code>).
+          Beim Klick lädt JavaScript diese Datei und zeigt den Inhalt im Modal.
         </p>
         <div class="modal-hero" style="margin-top:12px;">
-          <b>Erweiterung in 30 Sekunden</b>
+          <b>Erweiterung</b>
           <p>
-            1) Unten im Script ein neues Objekt in <code>PLACES</code> hinzufügen<br/>
-            2) Optional <code>imageCss</code> anpassen (Hintergrund-Gradient der Karte)<br/>
-            3) Seite pushen → GitHub Pages aktualisiert sich
+            1) Neue Datei erstellen, z. B. <code>italy.html</code><br/>
+            2) Neues Objekt in <code>PLACES</code> hinzufügen mit <code>page:"italy.html"</code><br/>
+            3) Fertig ✅
           </p>
         </div>
       </div>
@@ -396,9 +395,7 @@
     <section id="kontakt" class="section" aria-label="Kontakt">
       <div class="card">
         <h2 style="margin:0 0 10px; font-size:18px;">Kontakt / Impressum (Platzhalter)</h2>
-        <p>
-          Hier könnt ihr später eure Infos eintragen. Für ein Uni-Projekt reicht oft ein kurzer Hinweis, je nach Vorgaben.
-        </p>
+        <p>Hier könnt ihr später eure Infos eintragen.</p>
       </div>
     </section>
   </main>
@@ -410,26 +407,15 @@
         <b id="modalTitle">Ort</b>
         <button class="modal-close" id="modalCloseBtn" type="button" aria-label="Modal schließen">✕</button>
       </div>
+
       <div class="modal-content">
-        <div class="modal-hero">
-          <p id="modalIntro">Beschreibung…</p>
+        <div class="modal-hero" id="modalHeroBox">
+          <p class="muted" style="margin:0;">Inhalt wird geladen…</p>
           <div class="meta" id="modalTags"></div>
         </div>
 
-        <div class="modal-grid">
-          <div class="info">
-            <b>Warum wir ihn mögen</b>
-            <p id="modalWhy">—</p>
-          </div>
-          <div class="info">
-            <b>Tipps</b>
-            <p id="modalTips">—</p>
-          </div>
-        </div>
-
-        <div class="info">
-          <b>Fun Fact</b>
-          <p id="modalFun">—</p>
+        <div class="info" id="subpageContainer" style="display:none;">
+          <!-- Subpage MAIN content gets injected here -->
         </div>
       </div>
     </div>
@@ -437,53 +423,50 @@
 
   <script>
     /**
-     * ============================================================
-     *  EDIT HERE: Orte-Daten
-     *  → Andere können hier später einfach neue Orte hinzufügen.
-     * ============================================================
+     * Orte-Daten: Jede Karte hat eine eigene Subpage-Datei (page).
      */
     const PLACES = [
       {
-        id: "park",
-        title: "Stadtpark am See",
-        location: "Deutschland",
-        tags: ["Natur", "Spaziergang", "Sonnenuntergang"],
-        intro: "Unser Go-to-Ort, wenn wir kurz raus müssen: Wasser, Weitblick, Ruhe.",
-        why: "Man kommt sofort runter, egal wie stressig der Tag war.",
-        tips: "Am besten kurz vor Golden Hour hin. Picknickdecke mitnehmen.",
-        fun: "Die Enten dort sind gefühlt Influencer: immer im perfekten Licht.",
-        // Optional: Hintergrund der Karte (nur CSS-String)
+        id: "japan",
+        title: "Japan 🇯🇵",
+        location: "Asien",
+        tags: ["Kultur", "Food", "Städte"],
+        intro: "Tradition trifft Zukunft: Tempel, Neon, Onsen und Top-Essen.",
+        page: "japan.html",
         imageCss: "linear-gradient(135deg, rgba(124,92,255,.30), rgba(53,210,255,.22))"
       },
       {
-        id: "cafe",
-        title: "Kleines Lieblingscafé",
-        location: "Innenstadt",
-        tags: ["Kaffee", "Arbeiten", "Kuchen"],
-        intro: "Hier entstehen Ideen (und sehr viele Notizen).",
-        why: "Gute Atmosphäre, nette Leute, und man kann stundenlang sitzen.",
-        tips: "Früh kommen, dann ist es am ruhigsten. Fensterplätze sind top.",
-        fun: "Wir haben dort mehr To-do-Listen geschrieben als irgendwo sonst.",
-        imageCss: "linear-gradient(135deg, rgba(53,210,255,.24), rgba(255,80,140,.18))"
+        id: "usa",
+        title: "USA 🇺🇸",
+        location: "Nordamerika",
+        tags: ["Roadtrip", "Nationalparks", "Städte"],
+        intro: "Von Skylines bis Wüsten: große Distanzen, große Vielfalt.",
+        page: "usa.html",
+        imageCss: "linear-gradient(135deg, rgba(53,210,255,.22), rgba(255,80,140,.18))"
       },
       {
-        id: "viewpoint",
-        title: "Aussichtspunkt auf dem Hügel",
-        location: "Umland",
-        tags: ["Blick", "Wandern", "Fotos"],
-        intro: "Ein kurzer Aufstieg, dafür eine Aussicht, die jedes Mal überrascht.",
-        why: "Perfekt für Reset im Kopf und zum Durchatmen.",
-        tips: "Feste Schuhe. Bei klarer Sicht Kamera/Handy laden.",
-        fun: "Wir diskutieren dort jedes Mal, ob das da hinten schon die Berge sind.",
+        id: "australia",
+        title: "Australien 🇦🇺",
+        location: "Ozeanien",
+        tags: ["Strände", "Wildlife", "Abenteuer"],
+        intro: "Surf, Outback, Koalas: Natur pur und entspannter Lifestyle.",
+        page: "australia.html",
         imageCss: "linear-gradient(135deg, rgba(255,80,140,.18), rgba(124,92,255,.26))"
       }
     ];
 
     // ---------- Rendering ----------
-    const yearEl = document.getElementById("year");
-    yearEl.textContent = new Date().getFullYear();
-
+    document.getElementById("year").textContent = new Date().getFullYear();
     const grid = document.getElementById("placesGrid");
+
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
     function renderPlaces(){
       grid.innerHTML = "";
@@ -492,8 +475,8 @@
         card.className = "place-card";
         card.innerHTML = `
           <div class="place-media" style="background:${place.imageCss || ''}">
-            <!-- Optional: später echtes Bild via <img> -->
           </div>
+
           <div class="place-body">
             <div class="place-title">
               <div>
@@ -511,7 +494,7 @@
 
             <div class="place-actions">
               <button class="btn primary" type="button" data-open-modal="${escapeHtml(place.id)}">Mehr erfahren</button>
-              <button class="btn ghost" type="button" data-open-modal="${escapeHtml(place.id)}">Pop-up öffnen</button>
+              <button class="btn ghost" type="button" data-open-modal="${escapeHtml(place.id)}">Seite laden</button>
             </div>
           </div>
         `;
@@ -519,40 +502,24 @@
       });
     }
 
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    // ---------- Modal logic ----------
+    // ---------- Modal logic (loads subpage HTML) ----------
     const backdrop = document.getElementById("modalBackdrop");
     const closeBtn = document.getElementById("modalCloseBtn");
 
     const modalTitle = document.getElementById("modalTitle");
-    const modalIntro  = document.getElementById("modalIntro");
-    const modalTags   = document.getElementById("modalTags");
-    const modalWhy    = document.getElementById("modalWhy");
-    const modalTips   = document.getElementById("modalTips");
-    const modalFun    = document.getElementById("modalFun");
+    const modalTags = document.getElementById("modalTags");
+    const modalHeroBox = document.getElementById("modalHeroBox");
+    const subpageContainer = document.getElementById("subpageContainer");
 
     let lastFocusEl = null;
 
-    function openModal(placeId){
+    async function openModal(placeId){
       const place = PLACES.find(p => p.id === placeId);
       if(!place) return;
 
       lastFocusEl = document.activeElement;
 
       modalTitle.textContent = place.title || "Ort";
-      modalIntro.textContent = place.intro || "";
-      modalWhy.textContent   = place.why || "—";
-      modalTips.textContent  = place.tips || "—";
-      modalFun.textContent   = place.fun || "—";
-
       modalTags.innerHTML = (place.tags || [])
         .map(t => `<span class="tag">${escapeHtml(t)}</span>`)
         .join("");
@@ -560,6 +527,29 @@
       backdrop.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
       closeBtn.focus();
+
+      // Loading state (keeps your look)
+      modalHeroBox.querySelector("p").textContent = `Lade Inhalt aus ${place.page} …`;
+      subpageContainer.style.display = "none";
+      subpageContainer.innerHTML = "";
+
+      try{
+        const res = await fetch(place.page, { cache: "no-store" });
+        if(!res.ok) throw new Error("Fetch failed");
+
+        const htmlText = await res.text();
+        const doc = new DOMParser().parseFromString(htmlText, "text/html");
+        const main = doc.querySelector("main");
+
+        // Inject only the <main> content for clean popup view
+        subpageContainer.innerHTML = main ? main.innerHTML : htmlText;
+        subpageContainer.style.display = "block";
+
+        modalHeroBox.querySelector("p").textContent = place.intro || "Details";
+      }catch(err){
+        modalHeroBox.querySelector("p").textContent = `Fehler: ${place.page} konnte nicht geladen werden.`;
+        subpageContainer.style.display = "none";
+      }
     }
 
     function closeModal(){
@@ -568,14 +558,12 @@
       if(lastFocusEl && typeof lastFocusEl.focus === "function") lastFocusEl.focus();
     }
 
-    // Click handlers for open buttons (delegation)
     document.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-open-modal]");
       if(btn){
         openModal(btn.getAttribute("data-open-modal"));
         return;
       }
-      // Close if clicking backdrop (outside modal)
       if(e.target === backdrop){
         closeModal();
       }
@@ -583,24 +571,13 @@
 
     closeBtn.addEventListener("click", closeModal);
 
-    // ESC closes modal
     document.addEventListener("keydown", (e) => {
       if(e.key === "Escape" && backdrop.getAttribute("aria-hidden") === "false"){
         closeModal();
       }
     });
 
-    // Initial render
     renderPlaces();
-
-    /**
-     * ============================================================
-     *  FOR OTHER DEVELOPERS:
-     *  - Add new place:
-     *    PLACES.push({ id:"new", title:"...", tags:[...], intro:"...", why:"...", tips:"...", fun:"..." })
-     *  - Optional: add more modal sections, images, maps, links, etc.
-     * ============================================================
-     */
   </script>
 </body>
 </html>
