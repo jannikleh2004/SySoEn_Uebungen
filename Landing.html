@@ -450,7 +450,7 @@
         location: "Ozeanien",
         tags: ["Strände", "Wildlife", "Abenteuer"],
         intro: "Surf, Outback, Koalas: Natur pur und entspannter Lifestyle.",
-        page: "australia.html",
+        page: "australien.html",
         imageCss: "linear-gradient(135deg, rgba(255,80,140,.18), rgba(124,92,255,.26))"
       }
     ];
@@ -458,7 +458,7 @@
     // ---------- Rendering ----------
     document.getElementById("year").textContent = new Date().getFullYear();
     const grid = document.getElementById("placesGrid");
-
+  
     function escapeHtml(str){
       return String(str ?? "")
         .replaceAll("&", "&amp;")
@@ -467,6 +467,7 @@
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
     }
+
 
     function renderPlaces(){
       grid.innerHTML = "";
@@ -491,12 +492,14 @@
             </div>
 
             <p>${escapeHtml(place.intro || "")}</p>
-
+                         
             <div class="place-actions">
-              <button class="btn primary" type="button" data-open-modal="${escapeHtml(place.id)}">Mehr erfahren</button>
+              <a class="btn primary" href="${escapeHtml(place.page)}">Mehr erfahren</a>
               <button class="btn ghost" type="button" data-open-modal="${escapeHtml(place.id)}">Seite laden</button>
             </div>
-          </div>
+
+
+
         `;
         grid.appendChild(card);
       });
@@ -545,11 +548,17 @@
         subpageContainer.innerHTML = main ? main.innerHTML : htmlText;
         subpageContainer.style.display = "block";
 
-        modalHeroBox.querySelector("p").textContent = place.intro || "Details";
-      }catch(err){
-        modalHeroBox.querySelector("p").textContent = `Fehler: ${place.page} konnte nicht geladen werden.`;
-        subpageContainer.style.display = "none";
-      }
+        modalHeroBox.querySelector("p").textContent = place.intro || "Details";  
+        }catch(err){
+          // Fallback: Bei lokal geöffneten Dateien (file://) navigieren wir direkt zur Seite
+          if (location.protocol === 'file:') {
+            window.location.href = place.page;
+            return;
+          }
+          modalHeroBox.querySelector("p").textContent = `Fehler: ${place.page} konnte nicht geladen werden.`;
+          subpageContainer.style.display = "none";
+        }
+
     }
 
     function closeModal(){
