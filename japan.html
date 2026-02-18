@@ -1,74 +1,541 @@
+<!-- =========================
+     FILE: china.html
+     ========================= -->
 <!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Japan</title>
+  <title>China</title>
+
+  <style>
+    :root{
+      /* Red & Gold – Festive Palette */
+      --red:   #d31a1a;           /* Hauptrot */
+      --deep:  #18070a;           /* Tiefes Schwarzrot */
+      --gold:  #f5d26a;           /* Goldakzent */
+      --ink:   #fff7f0;           /* Helle Textfarbe */
+      --muted: #e6cfa8;           /* Gedämpfte Goldnote */
+
+      --card: rgba(255,255,255,.06);
+      --card-border: rgba(255,255,255,.2);
+      --shadow: 0 14px 40px rgba(0,0,0,.38);
+      --glow: 0 0 0 2px rgba(245,210,106,.18), 0 10px 30px rgba(245,210,106,.25);
+    }
+
+    *{ box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", "Helvetica Neue", Arial;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(211,26,26,.35), transparent 60%),
+        radial-gradient(900px 500px at 85% 0%, rgba(245,210,106,.22), transparent 60%),
+        linear-gradient(180deg, #0b0304 0%, #130708 48%, #0c0305 100%);
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    /* Auspicious Clouds + Papercut Kachelmuster */
+    .bg-pattern {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      opacity: .18;
+      background-image:
+        url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='200' height='120' viewBox='0 0 200 120'>\
+  <path d='M10,70 q30,-40 60,0 t60,0 t60,0' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='3' stroke-linecap='round'/>\
+  <path d='M-20,35 q30,-40 60,0 t60,0 t60,0' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='3' stroke-linecap='round'/>\
+</svg>");
+      background-size: 260px 156px;
+      background-repeat: repeat;
+    }
+    .bg-frame {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      mask-image: radial-gradient(60% 60% at 50% 50%, #000 60%, transparent 100%);
+      background:
+        radial-gradient(1000px 500px at 50% -10%, rgba(245,210,106,.12), transparent 60%),
+        radial-gradient(700px 350px at 10% 10%, rgba(211,26,26,.18), transparent 60%),
+        radial-gradient(700px 350px at 90% 10%, rgba(211,26,26,.18), transparent 60%);
+      opacity: .8;
+    }
+
+    main { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 24px; }
+
+    /* ===== Sticky Nav ===== */
+    .nav {
+      position: sticky; top: 0; z-index: 5;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(12,3,5,.65), rgba(12,3,5,.28));
+      border-bottom: 1px solid var(--card-border);
+      box-shadow: 0 8px 30px rgba(0,0,0,.22);
+    }
+    .nav-inner {
+      max-width: 1120px; margin: 0 auto; padding: 12px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; letter-spacing: .5px; }
+    .logo {
+      width: 36px; height: 36px; border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, #ffeaa2 0 34%, transparent 36%),
+        radial-gradient(circle at 50% 50%, #d31a1a 0 60%),
+        radial-gradient(circle at 60% 60%, #8a0c0c 0 100%);
+      box-shadow: var(--glow);
+      position: relative;
+    }
+    .logo::after{
+      content:''; position:absolute; inset:0; border-radius:50%;
+      box-shadow: 0 0 24px rgba(245,210,106,.45) inset;
+    }
+    .nav .chip {
+      font-size: 12px; color: var(--muted); border: 1px solid var(--card-border);
+      padding: 6px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.04);
+    }
+
+    /* ===== Marquee Ribbon ===== */
+    .ribbon {
+      display: grid; place-items: center;
+      height: 32px; margin-top: 0;
+      border-bottom: 1px solid var(--card-border);
+      background: linear-gradient(90deg, rgba(211,26,26,.35), rgba(245,210,106,.22));
+      overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    }
+    .marquee {
+      white-space: nowrap; font-size: 12px; color: #fff0ce; opacity: .9;
+      animation: marquee 24s linear infinite;
+    }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .marquee span { margin: 0 24px; letter-spacing: .6px; }
+
+    /* ===== Hero ===== */
+    .hero {
+      position: relative; margin-top: 16px;
+      border-radius: 22px; overflow: hidden;
+      border: 1px solid var(--card-border);
+      background: #0a0606; min-height: 56vh; display: grid;
+    }
+    .hero-media { position: absolute; inset: 0; overflow: hidden; }
+    .hero-media img {
+      position: absolute; inset: -4% -4% -4% -4%;
+      width: 108%; height: 108%; object-fit: cover;
+      transform: scale(1.12);
+      filter: contrast(1.06) saturate(1.06) brightness(.9);
+      will-change: transform;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(900px 300px at 20% 10%, rgba(211,26,26,.28), transparent 60%),
+        radial-gradient(900px 300px at 80% 10%, rgba(245,210,106,.22), transparent 60%),
+        linear-gradient(180deg, rgba(3,6,12,.0) 45%, rgba(3,6,12,.82) 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 2; align-self: end; padding: 28px; display: grid; gap: 12px;
+    }
+    .title {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: clamp(30px, 6.4vw, 48px); font-weight: 900; letter-spacing: .6px;
+      text-shadow: 0 8px 30px rgba(0,0,0,.55);
+    }
+    .title .shine {
+      background: linear-gradient(90deg, #fff8e2, #f5d26a 35%, #fff8e2 70%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 0 16px rgba(245,210,106,.25));
+      animation: shimmer 4s linear infinite;
+      background-size: 200% 100%;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: 0 0; } }
+    .kicker { color: var(--muted); font-size: 14px; }
+    .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(245,210,106,.12); color: #fff1c2;
+      border: 1px solid rgba(245,210,106,.28);
+      padding: 6px 10px; border-radius: 999px; font-size: 12px;
+    }
+
+    /* Wolken-Divider */
+    .cloud {
+      position: absolute; left: 0; right: 0; bottom: -1px; height: 90px;
+      opacity: .65;
+      background: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='1440' height='90' viewBox='0 0 1440 90' preserveAspectRatio='none'>\
+  <path d='M0,60 C120,20 240,100 360,60 C480,20 600,100 720,60 C840,20 960,100 1080,60 C1200,20 1320,100 1440,60 L1440,90 L0,90 Z' fill=\"rgba(12,6,6,0.9)\" />\
+</svg>") center / cover no-repeat;
+    }
+
+    /* ===== Grid + Cards (3D Tilt) ===== */
+    .grid { display: grid; gap: 16px; margin-top: 18px; }
+    @media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 18px; padding: 18px;
+      box-shadow: var(--shadow);
+      transform-style: preserve-3d;
+      transition: transform .25s ease, box-shadow .35s ease, background .35s ease;
+      position: relative;
+    }
+    .card::after{
+      /* zarter goldener Randglanz */
+      content:''; position:absolute; inset:0; border-radius:18px;
+      box-shadow: 0 0 0 1px rgba(245,210,106,.18) inset;
+      pointer-events:none;
+    }
+    .card:hover { background: rgba(255,255,255,.08); box-shadow: var(--shadow), 0 0 0 1px rgba(245,210,106,.22) inset; }
+    .card b { font-size: 16px; letter-spacing: .3px; display: inline-block; padding-left: 10px; border-left: 4px solid var(--red); color:#fff3d0; }
+    .card p { color: #ffefd4; }
+
+    /* ===== Medien ===== */
+    .media-card { overflow: hidden; padding: 0; }
+    .media-header { padding: 16px 16px 0; }
+    .frame {
+      position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden;
+      border-radius: 14px; margin: 12px 16px 16px; border: 1px solid var(--card-border);
+      background: rgba(255,255,255,.05);
+      box-shadow: 0 8px 30px rgba(0,0,0,.25);
+    }
+    .frame img, .frame iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; border: 0; display: block;
+      transform: scale(1); transition: transform .6s ease, filter .6s ease;
+      will-change: transform;
+    }
+    .frame:hover img { transform: scale(1.04); }
+
+    /* ===== Scroll Reveal ===== */
+    .reveal { opacity: 0; transform: translateY(18px) scale(.98); }
+    .reveal.in-view { opacity: 1; transform: translateY(0) scale(1); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.65,.2,1); }
+
+    /* ===== Zoom on Scroll (Figures) ===== */
+    .zoom {
+      overflow: hidden; border-radius: 16px; border: 1px solid var(--card-border);
+      position: relative; background: rgba(255,255,255,.04); box-shadow: var(--shadow);
+    }
+    .zoom img { width: 100%; height: auto; display: block; transform: scale(1); transition: transform .4s ease; will-change: transform; }
+    .zoom .label {
+      position: absolute; left: 10px; top: 10px;
+      background: rgba(12,6,6,.6); border: 1px solid var(--card-border); color: var(--ink);
+      font-size: 12px; padding: 6px 10px; border-radius: 999px; backdrop-filter: blur(6px);
+    }
+
+    /* ===== Lanterns (schwebend) ===== */
+    .lanterns { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow:hidden; }
+    .lantern {
+      position: absolute; bottom: -40px; width: 14px; height: 18px;
+      border-radius: 40% 40% 35% 35%;
+      background: radial-gradient(ellipse at 50% 40%, #ffd78a 30%, #ffb34a 70%, #b83a1e 100%);
+      box-shadow:
+        0 0 10px rgba(255,180,70,.6),
+        0 0 20px rgba(255,180,70,.35);
+      opacity: .65; filter: blur(.1px);
+      animation: rise linear forwards, waggle ease-in-out infinite, flicker 1.6s ease-in-out infinite;
+    }
+    .lantern::after{
+      /* kleiner Docht */
+      content:''; position:absolute; bottom:-3px; left:50%; transform:translateX(-50%);
+      width: 8px; height: 2px; background: rgba(0,0,0,.35); border-radius: 2px;
+    }
+    @keyframes rise { to { transform: translateY(-110vh); opacity: .0; } }
+    @keyframes waggle { 0% { margin-left: 0; } 50% { margin-left: 10px; } 100% { margin-left: 0; } }
+    @keyframes flicker {
+      0%,100% { box-shadow: 0 0 10px rgba(255,180,70,.6), 0 0 20px rgba(255,180,70,.35); }
+      50% { box-shadow: 0 0 12px rgba(255,200,110,.75), 0 0 28px rgba(255,200,110,.45); }
+    }
+
+    /* ===== Sparks Canvas ===== */
+    canvas#sparks {
+      position: fixed; inset: 0; width: 100vw; height: 100vh;
+      pointer-events: none; z-index: 2; opacity: .95;
+    }
+
+    /* ===== Footer ===== */
+    footer { color: var(--muted); text-align: center; font-size: 12px; padding: 30px 0 10px; }
+
+    /* ===== Motion Preferences ===== */
+    @media (prefers-reduced-motion: reduce) {
+      .marquee, .hero-media img, .frame img, .reveal, .lantern { animation: none !important; transition: none !important; transform: none !important; }
+      canvas#sparks { display:none; }
+    }
+  </style>
 </head>
 <body>
+  <!-- Background layers -->
+  <div class="bg-pattern"></div>
+  <div class="bg-frame"></div>
+
+  <!-- Sticky Nav -->
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>China</div>
+      </div>
+      <div class="chip">Dynastien • Tempel • Skyline</div>
+    </div>
+    <div class="ribbon">
+      <div class="marquee">
+        <span>Peking</span> • <span>Shanghai</span> • <span>Xi’an</span> • <span>Guilin</span> • <span>Zhangjiajie</span> • <span>Chengdu</span> • <span>Harbin</span> • <span>Hangzhou</span> •
+        <span>Peking</span> • <span>Shanghai</span> • <span>Xi’an</span> • <span>Guilin</span> • <span>Zhangjiajie</span> • <span>Chengdu</span> • <span>Harbin</span> • <span>Hangzhou</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero mit Parallax -->
   <main>
-    <div class="modal-hero">
-      <b style="font-size:14px;">Japan 🇯🇵</b>
-      <p>
-        Japan verbindet Tradition und Zukunft: ruhige Tempel & Schreine, moderne Metropolen, Onsen-Kultur
-        und Essen auf Weltklasse-Niveau.
-      </p>
-      <div class="meta">
-        <span class="tag">Kultur</span>
-        <span class="tag">Food</span>
-        <span class="tag">Städte</span>
-        <span class="tag">Natur</span>
+    <section class="hero reveal" data-animate>
+      <div class="hero-media" aria-hidden="true">
+        <!-- Freies Foto – Große Mauer (Unsplash) -->
+        <img id="heroImg" src="https://images.unsplash.com/photo-1508804052814-cd3ba865a116?q=80&w=1980&auto=format&fit=crop" alt="Great Wall of China">
+        <div class="hero-overlay"></div>
+        <div class="cloud" aria-hidden="true"></div>
       </div>
-    </div>
+      <div class="hero-content">
+        <div class="title"><span class="shine">China 🇨🇳</span></div>
+        <p class="kicker">Imposante Geschichte, pulsende Megacities, heilige Berge & ikonische Landschaften.</p>
+        <div class="meta">
+          <span class="tag">Kultur</span>
+          <span class="tag">Food</span>
+          <span class="tag">Nationalparks</span>
+          <span class="tag">Skylines</span>
+        </div>
+      </div>
+    </section>
 
-    <div class="modal-grid">
-      <div class="info">
+    <!-- Info Grid -->
+    <section class="grid">
+      <article class="card reveal" data-animate data-tilt>
         <b>Highlights</b>
-        <p>Tokyo • Kyoto • Osaka • Fushimi Inari • Arashiyama (Bambuswald)</p>
-      </div>
-      <div class="info">
+        <p>Peking (Verbotene Stadt) • Shanghai Skyline • Xi’an (Terrakotta) • Zhangjiajie • Guilin Karstlandschaft</p>
+      </article>
+
+      <article class="card reveal" data-animate data-tilt>
         <b>Beste Reisezeit</b>
-        <p>Frühling (Sakura) & Herbst (Momiji): mildes Wetter und starke Farben.</p>
-      </div>
-    </div>
+        <p>Frühling &amp; Herbst sind oft am angenehmsten; Sommer heiß/feucht, Norden im Winter sehr kalt (Eisskulpturen in Harbin!).</p>
+      </article>
+    </section>
 
-    <div class="info">
-      <b>Mini-Itinerary (3 Tage)</b>
-      <p>
-        Tag 1: City Walk + Streetfood + Aussichtspunkt<br/>
-        Tag 2: Tempel/Schrein + traditionelle Viertel + Matcha Spot<br/>
-        Tag 3: Tagesausflug Natur + Onsen am Abend
+    <!-- Itinerary -->
+    <section class="card reveal" data-animate data-tilt style="margin-top:16px;">
+      <b>Mini‑Itinerary (3 Tage – City + Culture)</b>
+      <p style="margin-top:8px;">
+        Tag 1: Historische Spots + Streetfood‑Gasse<br/>
+        Tag 2: Tempel/Altstadt + Garten/Teestube<br/>
+        Tag 3: Natur (Berge/Fluss) + Night View Skyline
       </p>
-    </div>
+    </section>
 
-    <div class="info">
-      <b>Dummy Image</b>
-      <div style="margin-top:10px;">
-        <img
-          src="https://picsum.photos/seed/japan-destination/1000/520"
-          alt="Japan placeholder"
-          loading="lazy"
-          style="width:100%;height:auto;border-radius:16px;border:1px solid rgba(255,255,255,.12);display:block;"
-        />
-      </div>
-    </div>
+    <!-- Travel Tip -->
+    <section class="card reveal" data-animate data-tilt style="margin-top:16px;">
+      <b>Travel Tip</b>
+      <p style="margin-top:8px;">
+        Respektiere Tempel‑Etikette (leise, Schultern bedeckt), achte auf lokale Hinweise und plane Puffer bei großen Distanzen.
+      </p>
+    </section>
 
-    <div class="info">
-      <b>Embedded Video</b>
-      <div style="margin-top:10px; position:relative; width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.18);">
+    <!-- Bild mit Zoom-on-Scroll -->
+    <section class="card media-card reveal" data-animate style="margin-top:16px;" data-tilt>
+      <div class="media-header"><b>Dummy Image</b></div>
+      <figure class="zoom" data-zoom>
+        <span class="label">Zhangjiajie • Avatar Mountains</span>
+        <img src="https://picsum.photos/seed/china-destination/1600/900" alt="China Landschaft Platzhalter" loading="lazy">
+      </figure>
+    </section>
+
+    <!-- Video -->
+    <section class="card media-card reveal" data-animate style="margin-top:16px;" data-tilt>
+      <div class="media-header"><b>Embedded Video</b></div>
+      <div class="frame">
         <iframe
-          src="https://www.youtube.com/embed/6p0DAz_30qQ"
-          title="Japan travel video"
+          src="https://www.youtube.com/embed/MvNf7z6jQ3A"
+          title="China travel video"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-          style="position:absolute; inset:0; width:100%; height:100%;"
-        ></iframe>
+          allowfullscreen>
+        </iframe>
       </div>
-      <p style="margin:10px 0 0; color:var(--muted); font-size:13px;">
-        Tipp: später ein Kyoto/Tokyo-Guide Video einbetten.
+      <p style="margin: 0 16px 16px; color: var(--muted); font-size: 13px;">
+        Tipp: Später z.B. ein *Shanghai by night* oder *Guilin river* Video einbetten.
       </p>
-    </div>
+    </section>
+
+    <footer>© China Travel Notes • red & gold cinematic edition</footer>
   </main>
+
+  <!-- Lanterns -->
+  <div class="lanterns" aria-hidden="true"></div>
+
+  <!-- Gold Sparks -->
+  <canvas id="sparks"></canvas>
+
+  <script>
+    // ===== Scroll Reveal =====
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) e.target.classList.add('in-view');
+      }
+    }, { threshold: 0.12, rootMargin: "0px 0px -10% 0px" });
+    document.querySelectorAll('[data-animate]').forEach(el => io.observe(el));
+
+    // ===== Parallax Hero (subtil) =====
+    const heroImg = document.getElementById('heroImg');
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const y = window.scrollY || window.pageYOffset;
+          const translate = Math.min(28, y * 0.16);
+          const scale = 1.12 + Math.min(0.06, y * 0.0006);
+          if (heroImg) heroImg.style.transform = `translateY(${translate}px) scale(${scale})`;
+          ticking = false;
+        });
+        ticking = true;
+      }
+      updateZooms();
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+
+    // ===== Zoom-on-Scroll für Bilder =====
+    function clamp(n, min, max){ return Math.max(min, Math.min(n, max)); }
+    function updateZooms() {
+      document.querySelectorAll('[data-zoom]').forEach(fig => {
+        const img = fig.querySelector('img');
+        if (!img) return;
+        const rect = fig.getBoundingClientRect();
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        const center = rect.top + rect.height/2;
+        const dist = Math.abs((vh/2) - center);
+        const norm = clamp(1 - dist / (vh/2), 0, 1);
+        const scale = 1 + norm * 0.10; // bis +10%
+        img.style.transform = `scale(${scale})`;
+      });
+    }
+    window.addEventListener('resize', updateZooms);
+    window.addEventListener('load', updateZooms);
+
+    // ===== 3D Tilt für Cards =====
+    const tiltEls = document.querySelectorAll('[data-tilt]');
+    tiltEls.forEach(card => {
+      let rAF = null;
+      function tilt(e){
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const rx = (0.5 - y) * 8; // rotateX
+        const ry = (x - 0.5) * 10; // rotateY
+        card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+      }
+      function reset(){ card.style.transform = 'perspective(800px) rotateX(0) rotateY(0)'; }
+      card.addEventListener('mousemove', (e)=> { if (!rAF) rAF = requestAnimationFrame(()=>{ tilt(e); rAF = null; }); });
+      card.addEventListener('mouseleave', reset);
+    });
+
+    // ===== Lanterns (leichtgewichtig) =====
+    (function lanterns(){
+      const container = document.querySelector('.lanterns');
+      const count = 18; // kräftig, aber performant
+      for (let i=0; i<count; i++) {
+        const l = document.createElement('span');
+        l.className = 'lantern';
+        const startLeft = Math.random()*100; // vw
+        const delay = Math.random()*6;
+        const dur = 12 + Math.random()*10; // 12–22s
+        const waggleDur = 3 + Math.random()*3;
+
+        l.style.left = startLeft + 'vw';
+        l.style.animationDuration = `${dur}s, ${waggleDur}s, 1.6s`;
+        l.style.animationDelay = `${delay}s, ${delay/2}s, ${delay/3}s`;
+        l.style.width = (12 + Math.random()*10) + 'px';
+        l.style.height = (14 + Math.random()*16) + 'px';
+        l.style.opacity = (0.45 + Math.random()*0.35).toFixed(2);
+
+        container.appendChild(l);
+        // Reuse after finish
+        l.addEventListener('animationend', (ev) => {
+          if (ev.animationName !== 'rise') return;
+          l.style.left = (Math.random()*100) + 'vw';
+          l.style.animation = 'none';
+          requestAnimationFrame(()=> {
+            l.style.animation = `rise ${dur}s linear forwards, waggle ${waggleDur}s ease-in-out infinite, flicker 1.6s ease-in-out infinite`;
+          });
+        });
+      }
+    })();
+
+    // ===== Gold Sparks (Feuerwerk/Glitzer) =====
+    (function sparks(){
+      const canvas = document.getElementById('sparks');
+      const ctx = canvas.getContext('2d');
+      let w, h, dpr;
+      let particles = [];
+      let running = true;
+
+      function resize(){
+        dpr = Math.max(1, window.devicePixelRatio || 1);
+        w = canvas.width = Math.floor(window.innerWidth * dpr);
+        h = canvas.height = Math.floor(window.innerHeight * dpr);
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      function burst(x, y, power = 1){
+        const colors = [`#fff6d0`, `#f5d26a`, `#ffb347`, `#d31a1a`];
+        const count = Math.floor(70 * power);
+        for (let i=0; i<count; i++){
+          const angle = Math.random() * Math.PI * 2;
+          const speed = (Math.random() * 4 + 2) * power * dpr;
+          particles.push({
+            x: x * dpr, y: y * dpr,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 60 + Math.random()*40,
+            color: colors[i % colors.length],
+            size: (Math.random()*2 + 1.2) * dpr
+          });
+        }
+      }
+
+      function step(){
+        if (!running) return;
+        ctx.clearRect(0,0,w,h);
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i=particles.length-1; i>=0; i--){
+          const p = particles[i];
+          p.x += p.vx; p.y += p.vy;
+          p.vy += 0.12 * dpr; // gravity
+          p.vx *= 0.99; p.vy *= 0.99;
+          p.life--;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+          ctx.fill();
+          if (p.life <= 0 || p.y > h+50) particles.splice(i,1);
+        }
+        ctx.globalCompositeOperation = 'source-over';
+        requestAnimationFrame(step);
+      }
+      step();
+
+      // Initiale Funken – links/rechts oben (subtiler Start)
+      setTimeout(()=> burst(window.innerWidth*0.25, window.innerHeight*0.28, 1.2), 700);
+      setTimeout(()=> burst(window.innerWidth*0.78, window.innerHeight*0.22, 1.2), 900);
+
+      // Burst on click/tap
+      window.addEventListener('pointerdown', (e)=> burst(e.clientX, e.clientY, 1.1));
+
+      // Respect reduced motion
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        running = false;
+        ctx.clearRect(0,0,w,h);
+      }
+    })();
+  </script>
 </body>
 </html>
